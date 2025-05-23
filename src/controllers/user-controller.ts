@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import {
     criarUsuario,
     loginUsuario
-} from "../services/userService";
+} from "../database/migrations";
 
 export const cadastrarUsuario = async (req: Request, res: Response) => {
     try {
