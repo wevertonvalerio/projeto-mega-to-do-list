@@ -1,43 +1,28 @@
 import { pool } from "../../config/db";
-import { User } from "../models/user-model";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
 
-export const criarUsuario = async (nome: string, senha: string) => {
+const criarTabelas = async () => {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS usuarios (
+        id SERIAL PRIMARY KEY,
+        nome TEXT  UNIQUE NOT NULL,
+        senha TEXT NOT NULL
+      );
+    `);
 
-    const senhaHash = await bcrypt.hash(senha, 10);
-
-    const result = await pool.query(
-        "INSERT INTO usuarios (nome, senha) VALUES ($1, $2) RETURNING id, nome",
-        [nome, senhaHash]
-    );
-    return result.rows[0];
-
-}
-
-export const loginUsuario = async (nome: string, senha: string) => {
-
-    const result = await pool.query(
-        "SELECT * FROM usuarios WHERE nome = $1",
-        [nome]
-    );
-
-    const usuario = result.rows[0];
-
-    const senhaValida = await bcrypt.compare(senha, usuario.senha);
-    if (!senhaValida) {
-        throw new Error("Senha Inválida!!!");
-    }
-
-    const token = jwt.sign(
-        {
-        id: usuario.id,
-        nome: usuario.nome
-        },
-        process.env.JWT_SECRET as string,
-        {
-            expiresIn: "1h",
-        }
-    );
-    return { token };
-}
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS tasks (
+        id SERIAL PRIMARY KEY,
+        titulo TEXT NOT NULL,
+        descricao TEXT,
+        data DATE NOT NULL,
+        prioridade TEXT CHECK (prioridade IN ('baixa', 'media', 'alta')) NOT NULL,
+        usuario_id INTEGER REFERENCES usuarios(id) ON DELETE CASCADE,
+        criada_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+  }
+  catch(error) {
+    console.error(error);
+  } 
+};
