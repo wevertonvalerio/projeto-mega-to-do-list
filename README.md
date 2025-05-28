@@ -213,3 +213,13 @@ git commit -m "feat: adiciona criação de tarefas"
 - ✅ Mantenha o padrão de código e organização definido pelo grupo.
 
 Seguindo essas práticas, o trabalho em equipe flui melhor e o projeto continua limpo e funcional para todos.
+
+## Executar testes
+
+Para executar os testes com Jest, TypeScript e SQLite em memória instale as dependências necessárias pelo terminal:
+
+`npm install --save-dev jest ts-jest @types/jest @types/node @types/express`
+
+Execute os testes:
+
+`npm test`
