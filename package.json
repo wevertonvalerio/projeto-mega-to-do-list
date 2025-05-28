@@ -1,8 +1,8 @@
 {
-  "name": "projeto-mega",
+  "name": "mega-to-do",
   "version": "1.0.0",
-  "description": "",
-  "main": "./src/server.ts",
+  "description": "To-do list criado para o processo de selecao da Mega Junior.",
+  "main": "./src/app.ts",
   "scripts": {
     "dev": "tsx --watch .",
     "start": "node server.ts",
@@ -11,11 +11,17 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "type": "module",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
-    "@types/express": "^5.0.1",
+    "@types/express": "^5.0.2",
+    "@types/node": "^22.15.23",
+    "@types/sequelize": "^4.28.20",
+    "ts-node": "^10.9.2",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   }

@@ -45,6 +45,15 @@ Antes de começar, instale o seguinte no seu computador (caso **não use Codespa
 - [ ] [Git](https://git-scm.com/) – para clonar o repositório e colaborar via Git
 - [ ] [Node.js](https://nodejs.org/) (versão 18 ou superior) – inclui o `npm`
 - [ ] [Visual Studio Code](https://code.visualstudio.com/) – recomendado para editar o projeto
+- [ ] [SQLite](https://www.sqlite.org/) – banco de dados
+
+### SQLite
+- Instale o Sequelize e o driver do SQLite pelo terminal utilizando esse comando:
+`npm install sequelize sqlite3`
+
+- Instale os tipos do Sequelize para TypeScript pelo terminal utilizando esse comando:
+`npm install --save-dev @types/sequelize`
+
 
 ## 💻 Usando o GitHub Codespaces (Recomendado)
 
@@ -110,11 +119,6 @@ projeto-mega-to-do-list/
 │     └── jwt.ts                           # Configuração de autenticação JWT
 │     └── tsconfig.json                    # Configurações do TypeScript
 |
-├── /docker                                # Arquivos para o Docker
-│     └── .dockerignore                    # Arquivo para ignorar arquivos no Docker
-│     └── docker-compose.yml               # Arquivo docker-compose para orquestrar containers
-│     └── Dockerfile                       # Arquivo de configuração do Docker
-│
 ├── /src                                    # Código fonte do projeto
 |
 |     └── /controllers                     # Controladores que lidam com as requisições e respostas
@@ -140,6 +144,10 @@ projeto-mega-to-do-list/
 │             └── task-service.ts          # Lógica relacionada a tarefas
 │             └── user-service.ts          # Lógica relacionada a usuários
 │
+|     └── /types                           # Lógica de negócios, manipulação de dados e interações com o banco de dados
+|             └── /express                 # Lógica de negócios, manipulação de dados e interações com o banco de dados
+│                     └── index.d.ts       # Lógica relacionada a tarefas
+│
 |     └── /utils                           # Funções utilitárias (ex.: formatação de dados, validações)
 │             └── formatters.ts            # Funções de formatação de dados, como formatação de data e hora
 │             └── validators.ts            # Funções de validação de dados, como CPF, etc.
@@ -150,7 +158,10 @@ projeto-mega-to-do-list/
 │     └── task.test.ts                     # Testes para a lógica de tarefas
 │     └── user.test.ts                     # Testes para a lógica de usuários
 │
-├── .gitignore # Arquivo para ignorar arquivos no Git
+├── .dockerignore                          # Arquivo para ignorar arquivos no Docker
+├── .gitignore                             # Arquivo para ignorar arquivos no Git
+├── docker-compose.yml                     # Arquivo docker-compose para orquestrar containers
+├── Dockerfile                             # Arquivo de configuração do Docker
 ├── package-lock.json # Trava de versões das dependências
 ├── package.json # Gerenciador de dependências e scripts do projeto
 └── README.md # Instruções do projeto
