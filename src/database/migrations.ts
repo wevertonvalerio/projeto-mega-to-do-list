@@ -1,4 +1,15 @@
+import { Sequelize } from "sequelize";
 import { pool } from "../../config/db";
+
+export const sequelize = new Sequelize({
+  dialect: "sqlite",
+  storage: "./database.sqlite",
+  logging: false,
+});
+
+export async function initialize() {
+  await sequelize.sync({ alter: true });
+  console.log("Banco inicializado");
 
 const criarTabelas = async () => {
   try {
