@@ -222,4 +222,4 @@ Para executar os testes com Jest, TypeScript e SQLite em memória instale as dep
 
 Execute os testes:
 
-`npm test`
+`NODE_ENV=test npm test`

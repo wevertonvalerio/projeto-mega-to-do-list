@@ -1,116 +1,189 @@
 import { Request, Response } from "express";
 import { TaskService } from "../services/task-service";
+import { getAuthenticatedUserId } from "../utils/auth-utils";
+import { Task } from "../models/task-model";
 
+// Responsável por lidar com as requisições HTTP relacionadas às tarefas
 export class TaskController {
+
+  /*
+   * async : Indica que a função usa operações assíncronas, como chamadas de banco de dados ou APIs.
+   *         Permite usar await dentro da função, o que pausa até a resposta chegar.
+   *
+   * req   : Representa a requisição HTTP recebida do cliente (vem com dados do usuário, corpo da requisição etc.).
+   * res   : Representa a resposta que será enviada de volta ao cliente.
+   *         Se usar res.json(...), isso não conta como "retorno da função", e sim como resposta HTTP.
+   * 
+   * Promise : Objeto que representa o resultado de uma operação assíncrona. É como dizer: “Prometo que vou te dar um resultado… mais tarde”.
+   *           Uma Promise pode estar em três estados:
+   *                pending   : Aguardando o resultado da operação (inicial).
+   *                fulfilled : A operação deu certo → entregou o valor.
+   *                rejected  : A operação falhou → retornou um erro.
+   */
   static async createTask(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.user?.id;
-      if (!userId) {
-        res.status(401).json({ error: "Não autorizado" });
-        return;
-      }
 
-      const { title, description, priority, dateTime } = req.body;
-      if (!title || !priority) {
-        res.status(400).json({ error: "Campos obrigatórios: title e priority" });
-        return;
-      }
+      // Verifica se o usuario esta autenticado.
+      const userId: number | null = getAuthenticatedUserId(req, res);
+      if (!userId) return;
 
-      const validPriorities = ["baixa", "média", "alta"];
-      if (!validPriorities.includes(priority)) {
-        res.status(400).json({ error: "Prioridade inválida" });
-        return;
-      }
+      // Usa o método para validar e extrair dados da tarefa
+      const taskData: { title: string; description?: string | undefined; priority: "baixa" | "media" | "alta"; dateTime?: Date | undefined; } | null = TaskController.validateTaskData(req, res);
+      if (!taskData) return; // Se der erro, já respondeu o cliente
 
-      const task = await TaskService.createTask({ userId, title, description, priority, dateTime });
+      // Chama o serviço para criar a tarefa
+      const task: Task = await TaskService.createTask({ userId, ...taskData });
+
+      // Retorna a tarefa criada com status 201 (criado)
       res.status(201).json(task);
     } catch {
+      // Em caso de erro interno, retorna status 500
       res.status(500).json({ error: "Erro ao criar tarefa" });
     }
   }
 
+  /**
+   * Método para listar todas as tarefas do usuário, com filtro
+   * @returns Json das tarefas encontradas
+   */
   static async getAllTasks(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.user?.id;
-      if (!userId) {
-        res.status(401).json({ error: "Não autorizado" });
-        return;
-      }
 
+      // Verifica se o usuario esta autenticado.
+      const userId: number | null = getAuthenticatedUserId(req, res);
+      if (!userId) return;
+
+      // Extrai os filtros e paginação da query string da URL
       const { prioridade, data, ordem, titulo, limit, offset } = req.query;
 
-      const limitNum = limit ? Math.min(Number(limit), 50) : 20;
-      const offsetNum = offset ? Number(offset) : 0;
+      // Converte os parâmetros de paginação para número com valores padrão
+      const limitNum: number = limit ? Math.min(Number(limit), 50) : 20; // Limita a 50 resultados no máximo
+      const offsetNum: number = offset ? Number(offset) : 0; // Navegar entre páginas de resultados.
 
-      const tasks = await TaskService.getAllTasksByUser(userId, {
+      // Chama o serviço para buscar as tarefas com os filtros e paginação
+      const tasks: Task[] = await TaskService.getAllTasksByUser(userId, {
         prioridade: prioridade?.toString(),
         data: data?.toString(),
-        ordem: ordem?.toString() as "titulo" | "descricao",
         titulo: titulo?.toString(),
         limit: limitNum,
         offset: offsetNum,
       });
 
+      // Retorna as tarefas encontradas
       res.json(tasks);
     } catch {
       res.status(500).json({ error: "Erro ao buscar tarefas" });
     }
   }
 
+  /**
+   * Método para atualizar uma tarefa existente
+   * @returns Json da tarefa atualizada
+   */
   static async updateTask(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.user?.id;
-      const taskId = Number(req.params.id);
-      if (!userId) {
-        res.status(401).json({ error: "Não autorizado" });
-        return;
-      }
 
-      const task = await TaskService.updateTask(userId, taskId, req.body);
+      // Verifica se o usuario esta autenticado.
+      const userId = getAuthenticatedUserId(req, res);
+      if (!userId) return;
+
+      // Converte o ID da tarefa (string) para número
+      const taskId = Number(req.params.id);
+
+      // Usa o método para validar e extrair dados da tarefa
+      const taskData = TaskController.validateTaskData(req, res);
+      if (!taskData) return; // Se der erro, já respondeu o cliente
+
+      // Chama o serviço para atualizar a tarefa com os novos dados
+      const task = await TaskService.updateTask(userId, taskId, taskData);
+
+      // Se a tarefa não for encontrada
       if (!task) {
         res.status(404).json({ error: "Tarefa não encontrada" });
         return;
       }
 
+      // Retorna a tarefa atualizada
       res.json(task);
     } catch {
       res.status(500).json({ error: "Erro ao atualizar tarefa" });
     }
   }
 
+  /**
+   * Método para excluir uma tarefa pelo ID
+   * @returns Status 204 indicando que foi deletada com sucesso
+   */
   static async deleteTask(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.user?.id;
-      const taskId = Number(req.params.id);
-      if (!userId) {
-        res.status(401).json({ error: "Não autorizado" });
-        return;
-      }
 
+      // Verifica se o usuario esta autenticado.
+      const userId = getAuthenticatedUserId(req, res);
+      if (!userId) return;
+
+      // Converte o ID da tarefa (string) para número
+      const taskId = Number(req.params.id);
+
+      // Chama o serviço para deletar a tarefa
       const success = await TaskService.deleteTask(userId, taskId);
+
+      // Se a tarefa não for encontrada
       if (!success) {
         res.status(404).json({ error: "Tarefa não encontrada" });
         return;
       }
 
+      // Retorna status 204 (sem conteúdo) indicando que foi deletada com sucesso
       res.status(204).send();
     } catch {
       res.status(500).json({ error: "Erro ao deletar tarefa" });
     }
   }
 
+  /**
+   * Método para excluir todas as tarefas marcadas como concluídas
+   * @returns Quantidade de tarefas deletadas
+   */
   static async deleteCompletedTasks(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.user?.id;
-      if (!userId) {
-        res.status(401).json({ error: "Não autorizado" });
-        return;
-      }
 
+      // Verifica se o usuario esta autenticado.
+      const userId = getAuthenticatedUserId(req, res);
+      if (!userId) return;
+
+      // Chama o serviço para deletar todas as tarefas concluídas
       const deletedCount = await TaskService.deleteCompletedTasks(userId);
+
+      // Retorna a quantidade de tarefas deletadas
       res.json({ message: `${deletedCount} tarefas concluídas removidas` });
     } catch {
       res.status(500).json({ error: "Erro ao remover tarefas concluídas" });
     }
+  }
+
+  // Método para extrair e validar dados da tarefa
+  private static validateTaskData(req: Request, res: Response): 
+    { title: string; description?: string | undefined; priority: "baixa" | "media" | "alta"; dateTime?: Date | undefined } | null {
+    
+    // Extrai os dados do corpo da requisição
+    const { title, description, priority, dateTime } = req.body;
+
+    // Valida se os campos obrigatórios foram preenchidos
+    if (!title || !priority) {
+      res.status(300).json({ error: "Campos obrigatórios: title e priority" });
+      return null;
+    }
+
+    // Define as prioridades válidas
+    const validPriorities = ["baixa", "media", "alta"];
+
+    // Verifica se a prioridade informada é válida
+    if (!validPriorities.includes(priority)) {
+      res.status(400).json({ error: "Prioridade inválida" });
+      return null;
+    }
+
+    // Se passou nas validações, retorna os dados
+    return { title, description, priority, dateTime };
   }
 }
