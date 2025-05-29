@@ -1,8 +1,11 @@
 import express from "express"; // facilita a criação de servidores HTTP com Node.js
 import { TaskController } from "./controllers/task-controller";
+import routerUsuario from "./routes/user-routes";
 import { authMiddleware } from "./middlewares/auth-middleware"; // verifica se o usuário está autenticado antes de acessar as rotas
 import { initialize } from "./database/migrations"; // Importa a função que inicializa o banco de dados, criando as tabelas necessárias
+import dotenv from "dotenv";
 
+dotenv.config();
 const app = express(); // Cria a aplicação Express (nosso servidor)
 app.use(express.json()); // Permite que o servidor entenda requisições com corpo em JSON
 app.use(authMiddleware); // Usa o middleware de autenticação para proteger todas as rotas
@@ -16,6 +19,7 @@ app.get("/tasks", TaskController.getAllTasks); // Rota para buscar todas as tare
 app.put("/tasks/:id", TaskController.updateTask); // Rota para atualizar uma tarefa específica (usando o ID dela)
 app.delete("/tasks/:id", TaskController.deleteTask); // Rota para deletar uma tarefa específica (também usando o ID dela)
 app.delete("/tasks/completed", TaskController.deleteCompletedTasks); // Rota para deletar todas as tarefas que já foram concluídas
+app.use("/usuario", routerUsuario);
 
 initialize(); // Inicializa o banco de dados, criando as tabelas se ainda não existirem
 

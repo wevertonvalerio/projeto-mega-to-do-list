@@ -1,4 +1,5 @@
 import { Sequelize } from "sequelize"; // Facilita a comunicação entre o código JavaScript/TypeScript e o banco de dados.
+import { pool } from "../../config/db";
 
 // Cria uma instância do Sequelize, configurando para usar o banco de dados SQLite.
 export const sequelize = new Sequelize({
@@ -18,4 +19,30 @@ export async function initialize() {
   const isTestEnv = process.env.NODE_ENV === 'test';
   await sequelize.sync({ force: isTestEnv, alter: !isTestEnv });
   console.log("Banco inicializado");
-}
+
+const criarTabelas = async () => {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS usuarios (
+        id SERIAL PRIMARY KEY,
+        nome TEXT  UNIQUE NOT NULL,
+        senha TEXT NOT NULL
+      );
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS tasks (
+        id SERIAL PRIMARY KEY,
+        titulo TEXT NOT NULL,
+        descricao TEXT,
+        data DATE NOT NULL,
+        prioridade TEXT CHECK (prioridade IN ('baixa', 'media', 'alta')) NOT NULL,
+        usuario_id INTEGER REFERENCES usuarios(id) ON DELETE CASCADE,
+        criada_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+  }
+  catch(error) {
+    console.error(error);
+  } 
+};
