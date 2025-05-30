@@ -49,6 +49,14 @@ export class UserController {
       // Extrai nome e senha do corpo da requisição
       const { nome, senha } = req.body;
 
+      if (!nome) {
+        res.status(404).send({message: "Usuário não encontrado"});
+      }
+      
+      if (!senha) {
+        res.status(404).send({message: "Senha inválida"});
+      }
+
       // Chama o modelo para realizar login e obter token JWT
       const { token } = await UserService.loginUsuario(nome, senha);
 

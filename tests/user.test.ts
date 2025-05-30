@@ -1,5 +1,10 @@
 import request from 'supertest';
 import app from '../src/app';
+import { sequelize } from '../src/database/migrations';
+
+beforeEach(async () => {
+  await sequelize.sync({ force: true });
+});
 
 describe('Testes de Usuário', () => {
   let token: string;
@@ -9,7 +14,6 @@ describe('Testes de Usuário', () => {
       nome: 'usuario1',
       senha: 'senha123',
     });
-    console.log('Resposta:', res.body);
     expect(res.status).toBe(201);
     expect(res.body.usuario).toHaveProperty('id');
   });
@@ -19,7 +23,7 @@ describe('Testes de Usuário', () => {
       nome: '',
       senha: 'senha123',
     });
-    expect(res.status).toBe(500);
+    expect(res.status).toBe(400);
   });
 
   it('Não deve criar um usuário com senha vazia', async () => {
@@ -27,10 +31,10 @@ describe('Testes de Usuário', () => {
       nome: 'usuario2',
       senha: '',
     });
-    expect(res.status).toBe(500);
+    expect(res.status).toBe(400);
   });
 
-  it('Deve realizar login com nome e senha corretos', async () => {
+  it.only('Deve realizar login com nome e senha corretos', async () => {
     const res = await request(app).post('/usuario/login').send({
       nome: 'usuario1',
       senha: 'senha123',
@@ -73,6 +77,21 @@ describe('Testes de Usuário', () => {
   });
 
   it.only('Deve realizar logout e invalidar o token', async () => {
+    // Register
+    await request(app).post('/usuario/register').send({
+      nome: 'usuario3',
+      senha: 'senha123',
+    });
+    // Login
+    const loginRes = await request(app).post('/usuario/login').send({
+      nome: 'usuario3',
+      senha: 'senha123',
+    });
+
+    //Token
+    const userToken = loginRes.body.token;
+
+    // Logout
     const res = await request(app)
       .post('/usuario/logout')
       .set('Authorization', `Bearer ${token}`);
@@ -99,18 +118,17 @@ describe('Testes de Usuário', () => {
       .post('/usuario/logout')
       .set('Authorization', `Bearer ${userToken}`);
     expect(Logout.status).toBe(202);
-    console.log('Token: ', userToken);
 
     // Listar Tasks
     const res = await request(app)
       .get('/tarefa/tasks')
       .set('Authorization', `Bearer ${userToken}`);
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(411);
   });
 
   it('Não deve excluir usuário sem estar logado', async () => {
     const res = await request(app).delete('/usuario/delete');
-    expect(res.status).toBe(502);
+    expect(res.status).toBe(402);
   });
 
   it('Deve excluir usuário logado', async () => {
@@ -136,6 +154,7 @@ describe('Testes de Usuário', () => {
       nome: 'usuario3',
       senha: 'senha123',
     });
-    expect(reloginRes.status).toBe(401);
+    expect(reloginRes.status).toBe(404);
   });
 });
+

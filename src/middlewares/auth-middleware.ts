@@ -32,6 +32,11 @@ export const autenticarToken: RequestHandler = (req: AuthRequest, res: Response,
     return; // Encerra aqui a execução
   }
 
+  if (tokenBlacklist.has(token)) {
+    res.status(411).json({ message: "Token inválido" });
+    return;
+  }
+
   // Verifica se o token é válido, usando a chave secreta
   jwt.verify(token, key, (err, user) => {
     if (err) {
