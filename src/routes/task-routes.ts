@@ -1,20 +1,58 @@
-import { Router } from "express"; // Permite criar um conjunto separado de rotas (como um "mini-servidor").
-import { TaskController } from "../controllers/task-controller"; 
-import { authMiddleware } from "../middlewares/auth-middleware";
+import { Router } from "express";
+import { TaskController } from "../controllers/task-controller";
+import { autenticarToken } from "../middlewares/auth-middleware";
+import { validarRequisicao } from "../middlewares/validation-middleware";
+import { body, param } from "express-validator";
 
-const router = Router(); // Cria um novo "roteador" (conjunto de rotas). Isso organiza melhor as rotas da aplicação.
+const router = Router();
 
-/*
-  Define as rotas disponíveis para tarefas.
+// Criar tarefa - validar campos básicos antes de chamar o controller
+router.post(
+  "/tasks",
+  autenticarToken,
+  [
+    body("title").notEmpty().withMessage("O título da tarefa é obrigatório"),
+    body("priority").notEmpty().withMessage("A prioridade da tarefa é obrigatória"),
+    body("title").isString(),
+    body("description").optional().isString(),
+    body("dateTime").optional().isDate(),
+    validarRequisicao
+  ],
+  TaskController.createTask
+);
 
-  Cada rota usa o middleware de autenticação:
-  - Isso significa que o usuário precisa estar logado/autenticado para acessar qualquer rota abaixo.
-*/
+// Buscar todas as tarefas - só precisa do token
+router.get("/tasks", autenticarToken, TaskController.getAllTasks);
 
-router.post("/tasks", authMiddleware, TaskController.createTask); // Rota para criar uma nova tarefa (POST = envio de dados)
-router.get("/tasks", authMiddleware, TaskController.getAllTasks); // Rota para buscar todas as tarefas do usuário
-router.put("/tasks/:id", authMiddleware, TaskController.updateTask); // Rota para atualizar uma tarefa específica, identificada pelo seu `id`
-router.delete("/tasks/:id", authMiddleware, TaskController.deleteTask); // Rota para deletar uma tarefa específica, também pelo `id`
-router.delete("/tasks", authMiddleware, TaskController.deleteCompletedTasks); // Rota para deletar todas as tarefas que já estão marcadas como concluídas
+// Atualizar tarefa - validar id e dados da tarefa
+router.put(
+  "/tasks/:id",
+  autenticarToken,
+  [
+    param("id").isInt().withMessage("ID da tarefa inválido"),
+    body("title").optional().notEmpty().withMessage("O título não pode ser vazio"),
+    body("priority").optional().notEmpty().withMessage("A prioridade não pode ser vazia"),
+    body("title").isString(),
+    body("description").optional().isString(),
+    body("dateTime").optional().isDate(),
+    body("taskCompleted").isBoolean(),
+    validarRequisicao
+  ],
+  TaskController.updateTask
+);
 
-export default router; // Exporta o roteador para que ele possa ser usado em outro arquivo (como o app.ts principal)
+// Deletar tarefa pelo id - validar id
+router.delete(
+  "/tasks/:id",
+  autenticarToken,
+  [
+    param("id").isInt().withMessage("ID da tarefa inválido"),
+    validarRequisicao
+  ],
+  TaskController.deleteTask
+);
+
+// Deletar todas as tarefas concluídas - só token
+router.delete("/tasks", autenticarToken, TaskController.deleteCompletedTasks);
+
+export default router;

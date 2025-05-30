@@ -1,6 +1,6 @@
-import { Op, Transaction } from "sequelize"; // 'Op' é usado para operadores avançados (como comparação de datas); 'Transaction' representa uma transação do banco
-import { Task } from "../models/task-model";
 import { sequelize } from "../database/migrations"; // Instância do Sequelize conectada ao banco de dados
+import { Task } from "../models/task-model";
+import { Op, Transaction } from "sequelize"; // 'Op' é usado para operadores avançados (como comparação de datas); 'Transaction' representa uma transação do banco
 
 export class TaskService {
   

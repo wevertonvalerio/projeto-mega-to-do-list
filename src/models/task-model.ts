@@ -10,7 +10,7 @@ import { sequelize } from "../database/migrations"; // Importa a conexão com o 
   Isso é útil para o TypeScript saber quais campos uma tarefa possui.
 */
 export interface TaskAttributes {
-  id: number;                           // Identificador único da tarefa
+  id: number;                           // Identificador único da tarefa criado automaticamente
   userId: number;                       // ID do usuário dono da tarefa
   title: string;                        // Título da tarefa
   description?: string;                 // Descrição (opcional)
@@ -104,11 +104,6 @@ Task.init(
       { fields: ["priority"] },   // índice para buscas por prioridade
       { fields: ["title"] },      // índice para buscas por título
       { fields: ["dateTime"] },   // índice para ordenar ou buscar por data
-
-      {
-        unique: true,             // índice único: impede que dois registros com o mesmo id + userId existam
-        fields: ["id", "userId"],
-      },
     ],
   }
 );

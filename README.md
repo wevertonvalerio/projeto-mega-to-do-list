@@ -46,6 +46,7 @@ Antes de começar, instale o seguinte no seu computador (caso **não use Codespa
 - [ ] [Node.js](https://nodejs.org/) (versão 18 ou superior) – inclui o `npm`
 - [ ] [Visual Studio Code](https://code.visualstudio.com/) – recomendado para editar o projeto
 - [ ] [SQLite](https://www.sqlite.org/) – banco de dados
+- [ ] [Express](https://expressjs.com/pt-br/) – framework para Node.js
 
 ### SQLite
 - Instale o Sequelize e o driver do SQLite pelo terminal utilizando esse comando:
@@ -54,6 +55,12 @@ Antes de começar, instale o seguinte no seu computador (caso **não use Codespa
 - Instale os tipos do Sequelize para TypeScript pelo terminal utilizando esse comando:
 `npm install --save-dev @types/sequelize`
 
+### Express Validator
+- Instale o Express Validator pelo terminal utilizando esse comando:
+`npm install express-validator`
+
+- Instale os tipos do Express Validator para TypeScript pelo terminal utilizando esse comando:
+`npm install --save-dev @types/express-validator`
 
 ## 💻 Usando o GitHub Codespaces (Recomendado)
 
@@ -218,8 +225,17 @@ Seguindo essas práticas, o trabalho em equipe flui melhor e o projeto continua 
 
 Para executar os testes com Jest, TypeScript e SQLite em memória instale as dependências necessárias pelo terminal:
 
-`npm install --save-dev jest ts-jest @types/jest @types/node @types/express`
+`npm install --save-dev jest ts-jest @types/jest supertest @types/supertestcle`
 
 Execute os testes:
 
-`NODE_ENV=test npm test`
+`npm test`
+
+Ou, se quiser ver os testes rodando com mais detalhes:
+
+`npm test -- --verbose`
+
+Se quiser rodar apenas um arquivo:
+
+`npx jest tests/task.test.ts`
+`npx jest tests/user.test.ts`

@@ -1,31 +1,25 @@
-import express from "express"; // facilita a criação de servidores HTTP com Node.js
-import { TaskController } from "./controllers/task-controller";
+import express from "express";
 import routerUsuario from "./routes/user-routes";
-import { authMiddleware } from "./middlewares/auth-middleware"; // verifica se o usuário está autenticado antes de acessar as rotas
-import { initialize } from "./database/migrations"; // Importa a função que inicializa o banco de dados, criando as tabelas necessárias
+import routerTarefa from "./routes/task-routes";
+import "./models/user-model";  // Importa o modelo User para registrar no Sequelize
+import "./models/task-model";  // Importa o modelo Task para registrar no Sequelize
+import { initialize } from "./database/migrations"; 
 import dotenv from "dotenv";
 
-dotenv.config();
-const app = express(); // Cria a aplicação Express (nosso servidor)
-app.use(express.json()); // Permite que o servidor entenda requisições com corpo em JSON
-app.use(authMiddleware); // Usa o middleware de autenticação para proteger todas as rotas
+dotenv.config();  // Carrega variáveis de ambiente do arquivo .env
+const app = express(); // Cria a aplicação Express, que será nosso servidor HTTP
+app.use(express.json()); // Permite que o servidor processe requisições com corpo no formato JSON
 
-/*
-  Define as rotas da aplicação e associa cada uma a um método do TaskController.
-  O TaskController cuida da lógica de negócio (como lidar com tarefas).
-*/
-app.post("/tasks", TaskController.createTask); // Rota para criar uma nova tarefa (POST = enviar dados)
-app.get("/tasks", TaskController.getAllTasks); // Rota para buscar todas as tarefas do usuário autenticado
-app.put("/tasks/:id", TaskController.updateTask); // Rota para atualizar uma tarefa específica (usando o ID dela)
-app.delete("/tasks/:id", TaskController.deleteTask); // Rota para deletar uma tarefa específica (também usando o ID dela)
-app.delete("/tasks/completed", TaskController.deleteCompletedTasks); // Rota para deletar todas as tarefas que já foram concluídas
 app.use("/usuario", routerUsuario);
+app.use("/tarefa", routerTarefa);
 
-initialize(); // Inicializa o banco de dados, criando as tabelas se ainda não existirem
+// Inicializa o banco de dados, criando as tabelas caso não existam ainda
+initialize();
 
-// Faz o servidor "escutar" a porta 3000. Isso significa que ele estará disponível em http://localhost:3000
+// Faz o servidor escutar a porta 3000 (http://localhost:3000)
 app.listen(3000, () => {
   console.log("Servidor rodando na porta 3000");
 });
 
-export default app; // Exporta o app para que ele possa ser usado em outros arquivos (por exemplo, nos testes)
+// Exporta o app para ser utilizado em outros arquivos, por exemplo, para testes automatizados
+export default app;

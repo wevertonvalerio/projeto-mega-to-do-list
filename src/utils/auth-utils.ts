@@ -11,3 +11,10 @@ export function getAuthenticatedUserId(req: Request, res: Response): number | nu
 
   return userId;
 }
+
+// Extrai o token do cabeçalho Authorization
+export function getTokenFromRequest(req: Request): string | null {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  return token || null;
+}

@@ -1,3 +1,5 @@
+// Usado em auth-utils, se apagar da erro!
+
 import { Request } from "express"; // Representa a requisição HTTP recebida pelo servidor.
 
 /*
