@@ -2,11 +2,13 @@ import request from 'supertest';
 import app from '../src/app';
 import { sequelize } from '../src/database/migrations';
 
-beforeEach(async () => {
-  await sequelize.sync({ force: true });
-});
 
 describe('Testes de Usuário', () => {
+  
+  beforeEach(async () => {
+    await sequelize.sync({ force: true }); // Zera o banco a cada teste
+  });
+
   let token: string;
 
   it('Deve criar um usuário com nome e senha válidos', async () => {
@@ -34,15 +36,22 @@ describe('Testes de Usuário', () => {
     expect(res.status).toBe(400);
   });
 
-  it.only('Deve realizar login com nome e senha corretos', async () => {
-    const res = await request(app).post('/usuario/login').send({
-      nome: 'usuario1',
-      senha: 'senha123',
-    });
-    expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty('token');
-    token = res.body.token;
+  it('Deve realizar login com nome e senha corretos', async () => {
+  // Register
+  await request(app).post('/usuario/register').send({
+    nome: 'usuario1',
+    senha: 'senha123',
   });
+
+  // Faz login
+  const res = await request(app).post('/usuario/login').send({
+    nome: 'usuario1',
+    senha: 'senha123',
+  });
+
+  expect(res.status).toBe(200);
+  expect(res.body).toHaveProperty('token');
+});
 
   it('Não deve realizar login com nome incorreto', async () => {
     const res = await request(app).post('/usuario/login').send({
@@ -76,7 +85,7 @@ describe('Testes de Usuário', () => {
     expect(res.status).toBe(400);
   });
 
-  it.only('Deve realizar logout e invalidar o token', async () => {
+  it('Deve realizar logout e invalidar o token', async () => {
     // Register
     await request(app).post('/usuario/register').send({
       nome: 'usuario3',
@@ -94,7 +103,7 @@ describe('Testes de Usuário', () => {
     // Logout
     const res = await request(app)
       .post('/usuario/logout')
-      .set('Authorization', `Bearer ${token}`);
+      .set('Authorization', `Bearer ${userToken}`);
     expect(res.status).toBe(202);
   });
 
@@ -132,15 +141,18 @@ describe('Testes de Usuário', () => {
   });
 
   it('Deve excluir usuário logado', async () => {
-    // Primeiro, criar e logar um novo usuário
+    // Register
     await request(app).post('/usuario/register').send({
       nome: 'usuario3',
       senha: 'senha123',
     });
+    // Login
     const loginRes = await request(app).post('/usuario/login').send({
       nome: 'usuario3',
       senha: 'senha123',
     });
+
+    // Token
     const userToken = loginRes.body.token;
 
     // Excluir o usuário

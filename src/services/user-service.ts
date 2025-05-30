@@ -80,6 +80,7 @@ export class UserService {
         where: { id: userId },
         transaction: t,
       });
+      console.log("Usuários deletados:", deletado); // <= deve imprimir 1
       return deletado > 0;
     });
   }
