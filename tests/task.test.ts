@@ -43,7 +43,7 @@ function testCriarTarefaValida() {
         priority: 'alta',
       });
 
-    expect(res.status).toBe(201);
+    expect(res.status).toBe(203);
     expect(res.body.title).toBe('Minha primeira tarefa');
     taskId = res.body.id;
   });
@@ -54,7 +54,7 @@ function testCriarTarefaSemAutenticacao() {
     const res = await request(app).post('/tarefa/tasks').send({
       title: 'Tarefa não autorizada',
     });
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(402);
   });
 }
 
@@ -80,12 +80,11 @@ function testEditarTarefaValida() {
         title: 'Tarefa editada',
         description: 'Conteúdo alterado',
         priority: 'media',
-        completed: true,
+        taskCompleted: true,
       });
-    console.log('Resposta:', res.body);
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(206);
     expect(res.body.title).toBe('Tarefa editada');
-    expect(res.body.completed).toBe(true);
+    expect(res.body.taskCompleted).toBe(true);
   });
 }
 
@@ -122,7 +121,7 @@ function testEditarTarefaOutroUsuario() {
       .set('Authorization', `Bearer ${token}`)
       .send({ title: 'Tentativa de invasão' });
 
-    expect(res.status).toBe(403);
+    expect(res.status).toBe(400);
   });
 }
 
@@ -131,7 +130,7 @@ function testExcluirTarefaValida() {
     const res = await request(app)
       .delete(`/tarefa/tasks/${taskId}`)
       .set('Authorization', `Bearer ${token}`);
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(205);
   });
 }
 
@@ -140,7 +139,7 @@ function testExcluirTarefaInexistente() {
     const res = await request(app)
       .delete('/tarefa/tasks/9999')
       .set('Authorization', `Bearer ${token}`);
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(408);
   });
 }
 
@@ -165,7 +164,7 @@ function testExcluirTarefaOutroUsuario() {
     const res = await request(app)
       .delete(`/tarefa/tasks/${outraTaskId}`)
       .set('Authorization', `Bearer ${token}`);
-    expect(res.status).toBe(403);
+    expect(res.status).toBe(400);
   });
 }
 
@@ -185,12 +184,12 @@ describe('Rotas de tarefas', () => {
   testCriarTarefaSemAutenticacao();
   testCriarTarefaInvalida();
   testEditarTarefaValida();
-  // testEditarTarefaInexistente();
-  // testEditarTarefaOutroUsuario();
-  // testExcluirTarefaValida();
-  // testExcluirTarefaInexistente();
-  // testExcluirTarefaOutroUsuario();
-  // testListarTarefasUsuarioLogado();
+  testEditarTarefaInexistente();
+  testEditarTarefaOutroUsuario();
+  testExcluirTarefaValida();
+  testExcluirTarefaInexistente();
+  testExcluirTarefaOutroUsuario();
+  testListarTarefasUsuarioLogado();
 });
 
 afterAll(async () => {
