@@ -35,10 +35,10 @@ export class TaskController {
       const task: Task = await TaskService.createTask({ userId, ...taskData });
 
       // Retorna a tarefa criada com status 201 (criado)
-      res.status(201).json(task);
+      res.status(203).json(task);
     } catch {
       // Em caso de erro interno, retorna status 500
-      res.status(500).json({ error: "Erro ao criar tarefa" });
+      res.status(503).json({ error: "Erro ao criar tarefa" });
     }
   }
 
@@ -72,7 +72,7 @@ export class TaskController {
       // Retorna as tarefas encontradas
       res.json(tasks);
     } catch {
-      res.status(500).json({ error: "Erro ao buscar tarefas" });
+      res.status(504).json({ error: "Erro ao buscar tarefas" });
     }
   }
 
@@ -90,8 +90,15 @@ export class TaskController {
       // Converte o ID da tarefa (string) para número
       const taskId = Number(req.params.id);
 
+      // Buscar dados da tarefa existente no banco
+      const existingTask = await Task.findOne({ where: { id: taskId, userId } });
+      if (!existingTask) {
+        res.status(404).json({ error: "Tarefa não encontrada" });
+        return;
+      }
+
       // Usa o método para validar e extrair dados da tarefa
-      const taskData = TaskController.validateTaskData(req, res);
+      const taskData = TaskController.validateTaskData(req, res, existingTask);
       if (!taskData) return; // Se der erro, já respondeu o cliente
 
       // Chama o serviço para atualizar a tarefa com os novos dados
@@ -99,14 +106,14 @@ export class TaskController {
 
       // Se a tarefa não for encontrada
       if (!task) {
-        res.status(404).json({ error: "Tarefa não encontrada" });
+        res.status(407).json({ error: "Tarefa não encontrada" });
         return;
       }
 
-      // Retorna a tarefa atualizada
-      res.json(task);
+      // Retorna a tarefa atualizada com status 206 (editado)
+      res.status(206).json(task);
     } catch {
-      res.status(500).json({ error: "Erro ao atualizar tarefa" });
+      res.status(505).json({ error: "Erro ao atualizar tarefa" });
     }
   }
 
@@ -129,14 +136,14 @@ export class TaskController {
 
       // Se a tarefa não for encontrada
       if (!success) {
-        res.status(404).json({ error: "Tarefa não encontrada" });
+        res.status(408).json({ error: "Tarefa não encontrada" });
         return;
       }
 
       // Retorna status 204 (sem conteúdo) indicando que foi deletada com sucesso
-      res.status(204).send();
+      res.status(205).send();
     } catch {
-      res.status(500).json({ error: "Erro ao deletar tarefa" });
+      res.status(506).json({ error: "Erro ao deletar tarefa" });
     }
   }
 
@@ -157,33 +164,50 @@ export class TaskController {
       // Retorna a quantidade de tarefas deletadas
       res.json({ message: `${deletedCount} tarefas concluídas removidas` });
     } catch {
-      res.status(500).json({ error: "Erro ao remover tarefas concluídas" });
+      res.status(507).json({ error: "Erro ao remover tarefas concluídas" });
     }
   }
 
-  // Método para extrair e validar dados da tarefa
-  private static validateTaskData(req: Request, res: Response): 
-    { title: string; description?: string | undefined; priority: "baixa" | "media" | "alta"; dateTime?: Date | undefined } | null {
-    
-    // Extrai os dados do corpo da requisição
-    const { title, description, priority, dateTime } = req.body;
-
-    // Valida se os campos obrigatórios foram preenchidos
-    if (!title || !priority) {
-      res.status(300).json({ error: "Campos obrigatórios: title e priority" });
-      return null;
+ private static validateTaskData(
+    req: Request,
+    res: Response,
+    dadosExistentes?: {
+      title: string;
+      description?: string;
+      priority: "baixa" | "media" | "alta";
+      dateTime?: Date;
+      taskCompleted?: boolean;
     }
-
-    // Define as prioridades válidas
+  ): {
+    title: string;
+    description?: string;
+    priority: "baixa" | "media" | "alta";
+    dateTime?: Date;
+    taskCompleted?: boolean;
+  } | null {
+    const { title, description, priority, dateTime, taskCompleted } = req.body;
     const validPriorities = ["baixa", "media", "alta"];
 
-    // Verifica se a prioridade informada é válida
-    if (!validPriorities.includes(priority)) {
-      res.status(400).json({ error: "Prioridade inválida" });
+    // Preenche os dados ausentes com os existentes
+    const finalTitle = title ?? dadosExistentes?.title;
+    const finalPriority = priority ?? dadosExistentes?.priority;
+
+    if (!finalTitle || !finalPriority) {
+      res.status(409).json({ error: "Campos obrigatórios: title e priority" });
       return null;
     }
 
-    // Se passou nas validações, retorna os dados
-    return { title, description, priority, dateTime };
+    if (!validPriorities.includes(finalPriority)) {
+      res.status(409).json({ error: "Prioridade inválida" });
+      return null;
+    }
+
+    return {
+      title: finalTitle,
+      description: description ?? dadosExistentes?.description,
+      priority: finalPriority,
+      dateTime: dateTime ? new Date(dateTime) : dadosExistentes?.dateTime,
+      taskCompleted: taskCompleted ?? dadosExistentes?.taskCompleted,
+    };
   }
 }

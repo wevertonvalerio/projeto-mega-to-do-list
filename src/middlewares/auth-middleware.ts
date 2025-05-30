@@ -25,9 +25,9 @@ export const autenticarToken: RequestHandler = (req: AuthRequest, res: Response,
   // Separa o token do prefixo 'Bearer'
   const token = authHeader && authHeader.split(" ")[1];
 
-  // Se não existir token, responde com status 401 (não autorizado)
+  // Se não existir token, responde com status 402 (não autorizado)
   if (!token) {
-    res.status(401).json({ error: "Token não fornecido." });
+    res.status(402).json({ error: "Token não fornecido." });
     return; // Encerra aqui a execução
   }
 

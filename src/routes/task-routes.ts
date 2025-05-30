@@ -32,7 +32,7 @@ router.put(
     param("id").isInt().withMessage("ID da tarefa inválido"),
     body("title").optional().notEmpty().withMessage("O título não pode ser vazio"),
     body("priority").optional().notEmpty().withMessage("A prioridade não pode ser vazia"),
-    body("title").isString(),
+    body("title").optional().isString(),
     body("description").optional().isString(),
     body("dateTime").optional().isDate(),
     body("taskCompleted").optional().isBoolean(),

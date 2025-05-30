@@ -60,7 +60,7 @@ export class UserController {
 
     } catch (error: any) {
       // Se ocorrer erro (usuário não encontrado ou senha inválida), retorna 401
-      res.status(401).json({ error: error.message });
+      res.status(404).json({ error: error.message });
     }
   }
 
@@ -75,7 +75,7 @@ export class UserController {
       // Extrai o token JWT do cabeçalho Authorization
       const token = getTokenFromRequest(req);
       if (!token) {
-        res.status(400).json({ error: "Token não fornecido" });
+        res.status(405).json({ error: "Token não fornecido" });
         return;
       }
 
@@ -83,9 +83,9 @@ export class UserController {
       UserService.logoutUsuario(token);
 
       // Retorna status 200 com mensagem de logout
-      res.status(200).json({ message: "Logout realizado com sucesso" });
+      res.status(202).json({ message: "Logout realizado com sucesso" });
     } catch {
-      res.status(500).json({ error: "Erro ao realizar logout" });
+      res.status(501).json({ error: "Erro ao realizar logout" });
     }
   }
 
@@ -106,14 +106,14 @@ export class UserController {
       const sucesso = await UserService.excluirUsuario(userId);
 
       if (!sucesso) {
-        res.status(404).json({ error: "Usuário não encontrado" });
+        res.status(406).json({ error: "Usuário não encontrado" });
         return;
       }
 
       // Retorna status 204 (sem conteúdo) após exclusão
       res.status(204).send();
     } catch {
-      res.status(500).json({ error: "Erro ao excluir usuário" });
+      res.status(502).json({ error: "Erro ao excluir usuário" });
     }
   }
 }
