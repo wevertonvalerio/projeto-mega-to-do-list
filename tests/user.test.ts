@@ -6,10 +6,10 @@ beforeEach(async () => {
   await sequelize.sync({ force: true });
 });
 
-describe('Testes de Usuário', () => {
+describe.only('Testes de Usuário', () => {
   let token: string;
 
-  it('Deve criar um usuário com nome e senha válidos', async () => {
+  it.only('Deve criar um usuário com nome e senha válidos', async () => {
     const res = await request(app).post('/usuario/register').send({
       nome: 'usuario1',
       senha: 'senha123',
