@@ -7,19 +7,16 @@ import { initialize } from "./database/migrations";
 import dotenv from "dotenv";
 
 dotenv.config();  // Carrega variáveis de ambiente do arquivo .env
+
 const app = express(); // Cria a aplicação Express, que será nosso servidor HTTP
 app.use(express.json()); // Permite que o servidor processe requisições com corpo no formato JSON
 
 app.use("/usuario", routerUsuario);
 app.use("/tarefa", routerTarefa);
 
-// Inicializa o banco de dados, criando as tabelas caso não existam ainda
-initialize();
-
-// Faz o servidor escutar a porta 3000 (http://localhost:3000)
-app.listen(3000, () => {
-  console.log("Servidor rodando na porta 3000");
-});
+if (process.env.NODE_ENV !== 'test') {
+  initialize(); // Inicializa o banco de dados, criando as tabelas caso não existam ainda
+}
 
 // Exporta o app para ser utilizado em outros arquivos, por exemplo, para testes automatizados
 export default app;

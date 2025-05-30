@@ -79,9 +79,10 @@ function testEditarTarefaValida() {
       .send({
         title: 'Tarefa editada',
         description: 'Conteúdo alterado',
-        priority: 'média',
+        priority: 'media',
         completed: true,
       });
+    console.log('Resposta:', res.body);
     expect(res.status).toBe(200);
     expect(res.body.title).toBe('Tarefa editada');
     expect(res.body.completed).toBe(true);
@@ -181,9 +182,9 @@ function testListarTarefasUsuarioLogado() {
 // Executa todos os testes
 describe('Rotas de tarefas', () => {
   testCriarTarefaValida();
-  // testCriarTarefaSemAutenticacao();
-  // testCriarTarefaInvalida();
-  // testEditarTarefaValida();
+  testCriarTarefaSemAutenticacao();
+  testCriarTarefaInvalida();
+  testEditarTarefaValida();
   // testEditarTarefaInexistente();
   // testEditarTarefaOutroUsuario();
   // testExcluirTarefaValida();

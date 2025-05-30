@@ -35,7 +35,7 @@ router.put(
     body("title").isString(),
     body("description").optional().isString(),
     body("dateTime").optional().isDate(),
-    body("taskCompleted").isBoolean(),
+    body("taskCompleted").optional().isBoolean(),
     validarRequisicao
   ],
   TaskController.updateTask

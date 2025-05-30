@@ -225,7 +225,7 @@ Seguindo essas práticas, o trabalho em equipe flui melhor e o projeto continua 
 
 Para executar os testes com Jest, TypeScript e SQLite em memória instale as dependências necessárias pelo terminal:
 
-`npm install --save-dev jest ts-jest @types/jest supertest @types/supertestcle`
+`npm install --save-dev jest ts-jest @types/jest supertest @types/supertest`
 
 Execute os testes:
 
