@@ -59,7 +59,7 @@ export class UserController {
       });
 
     } catch (error: any) {
-      // Se ocorrer erro (usuário não encontrado ou senha inválida), retorna 401
+      // Se ocorrer erro (usuário não encontrado ou senha inválida), retorna 404
       res.status(404).json({ error: error.message });
     }
   }

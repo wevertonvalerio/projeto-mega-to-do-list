@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import { key } from "../../config/jwt"; // Chave secreta para JWT
+import { tokenBlacklist } from "../services/user-service";
 
 // Extende a interface Request do Express para adicionar a propriedade 'user'
 export interface AuthRequest extends Request {

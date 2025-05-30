@@ -4,7 +4,7 @@ import { Transaction } from "sequelize";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const tokenBlacklist = new Set<string>(); // tokens inválidos (logout)
+export const tokenBlacklist = new Set<string>(); // tokens inválidos (logout)
 
 export class UserService {
   /**
