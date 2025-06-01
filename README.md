@@ -7,6 +7,7 @@ Este repositório contém **apenas o backend** de um projeto web completo do tip
 O projeto está dividido em três partes, cada uma com seu próprio repositório:
 
 - 🔙 [Backend (este repositório)](https://github.com/wevertonvalerio/projeto-mega-to-do-list/tree/main)
+- 📟 [Figma] ([https://www.figma.com/design/4FB017cTA2qMRyysZkdmEc/Mega-To-do?node-id=4-2&p=f](url))
 - 🌐 [Frontend](link_frontend)
 - 📱 [Mobile](link_mobile)
 
@@ -77,42 +78,6 @@ O GitHub Codespaces permite programar direto do navegador, sem precisar instalar
 7. Ou clique em **"Open in VS Code"** para usar o VS Code instalado
 
 > **Obs:** o Codespaces já vem com Git, terminal e extensões configuradas.
-
-## 📚 Guia Básico de Git
-
-### 🔐 Configurando o Git com chave SSH
-
-Para configurar uma chave SSH e evitar digitar sua senha toda vez que usar o Git, siga a documentação oficial:
-
-🔗 [Como gerar e adicionar uma chave SSH no GitHub](https://docs.github.com/pt/authentication/connecting-to-github-with-ssh)
-
-### 🔁 Clonando um repositório
-
-Para clonar este ou qualquer repositório em sua máquina local, siga:
-
-🔗 [Como clonar um repositório do GitHub](https://docs.github.com/pt/repositories/creating-and-managing-repositories/cloning-a-repository)
-
-### 🔄 Atualizar o repositório local (git pull)
-
-Sempre antes de começar a programar, sincronize com o repositório remoto:
-
-🔗 [Como usar o git pull](https://www.atlassian.com/git/tutorials/syncing/git-pull)
-
-### 🚀 Enviar alterações para o GitHub (git push)
-
-Depois de fazer mudanças no código, siga esses passos para enviar ao repositório:
-
-🔗 [Como usar o git push](https://www.atlassian.com/git/tutorials/syncing/git-push)
-
-### ℹ️ Resumo
-
-| Comando                | Para que serve                         |
-|------------------------|----------------------------------------|
-| `git clone`            | Copiar um repositório para sua máquina |
-| `git pull origin main` | Atualizar com o que está no GitHub     |
-| `git add .`            | Adicionar todas as alterações          |
-| `git commit -m ""`     | Salvar as alterações localmente        |
-| `git push origin main` | Enviar suas alterações para o GitHub   |
 
 ## 📁 Organização das Pastas
 
