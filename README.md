@@ -7,7 +7,7 @@ Este repositório contém **apenas o backend** de um projeto web completo do tip
 O projeto está dividido em três partes, cada uma com seu próprio repositório:
 
 - 🔙 [Backend (este repositório)](https://github.com/wevertonvalerio/projeto-mega-to-do-list/tree/main)
-- 📟 [Figma] ([url](https://www.figma.com/design/4FB017cTA2qMRyysZkdmEc/Mega-To-do?node-id=4-2&p=f))
+- 📟 ([Figma](https://www.figma.com/design/4FB017cTA2qMRyysZkdmEc/Mega-To-do?node-id=4-2&p=f))
 - 🌐 [Frontend](link_frontend)
 - 📱 [Mobile](link_mobile)
 
