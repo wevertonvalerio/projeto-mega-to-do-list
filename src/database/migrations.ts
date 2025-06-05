@@ -8,7 +8,7 @@ export const sequelize = new Sequelize({
 
 export async function initialize() {
   try {
-    await sequelize.sync({ alter: true });
+    await sequelize.sync({ force: false });
     console.log("Banco de dados inicializado.");
   } catch (error) {
     console.error("Erro na sincronização do banco:", error);

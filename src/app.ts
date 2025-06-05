@@ -4,9 +4,6 @@ import routerTarefa from "./routes/task-routes";
 import "./models/user-model";  // Importa o modelo User para registrar no Sequelize
 import "./models/task-model";  // Importa o modelo Task para registrar no Sequelize
 import { initialize } from "./database/migrations"; 
-import dotenv from "dotenv";
-
-dotenv.config();  // Carrega variáveis de ambiente do arquivo .env
 
 const app = express(); // Cria a aplicação Express, que será nosso servidor HTTP
 app.use(express.json()); // Permite que o servidor processe requisições com corpo no formato JSON
