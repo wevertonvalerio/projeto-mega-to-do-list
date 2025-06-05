@@ -43,6 +43,8 @@ function testCriarTarefaValida() {
         priority: 'alta',
       });
 
+      console.log(res.body.title);
+
     expect(res.status).toBe(203);
     expect(res.body.title).toBe('Minha primeira tarefa');
     taskId = res.body.id;
@@ -54,6 +56,8 @@ function testCriarTarefaSemAutenticacao() {
     const res = await request(app).post('/tarefa/tasks').send({
       title: 'Tarefa não autorizada',
     });
+      console.log(res.body.title);
+
     expect(res.status).toBe(402);
   });
 }
@@ -67,6 +71,8 @@ function testCriarTarefaInvalida() {
         title: '',
         priority: 'desconhecida',
       });
+      console.log(res.body.title);
+
     expect(res.status).toBe(400);
   });
 }
@@ -82,6 +88,8 @@ function testEditarTarefaValida() {
         priority: 'media',
         taskCompleted: true,
       });
+      console.log(res.body.title);
+
     expect(res.status).toBe(206);
     expect(res.body.title).toBe('Tarefa editada');
     expect(res.body.taskCompleted).toBe(true);
@@ -94,6 +102,8 @@ function testEditarTarefaInexistente() {
       .put('/tarefa/tasks/9999')
       .set('Authorization', `Bearer ${token}`)
       .send({ title: 'Teste' });
+      console.log(res.body.title);
+
     expect(res.status).toBe(404);
   });
 }
@@ -121,6 +131,8 @@ function testEditarTarefaOutroUsuario() {
       .set('Authorization', `Bearer ${token}`)
       .send({ title: 'Tentativa de invasão' });
 
+      console.log(res.body.title);
+
     expect(res.status).toBe(400);
   });
 }
@@ -130,6 +142,8 @@ function testExcluirTarefaValida() {
     const res = await request(app)
       .delete(`/tarefa/tasks/${taskId}`)
       .set('Authorization', `Bearer ${token}`);
+      console.log(res.body.title);
+
     expect(res.status).toBe(205);
   });
 }
@@ -139,6 +153,8 @@ function testExcluirTarefaInexistente() {
     const res = await request(app)
       .delete('/tarefa/tasks/9999')
       .set('Authorization', `Bearer ${token}`);
+      console.log(res.body.title);
+
     expect(res.status).toBe(408);
   });
 }
@@ -164,6 +180,8 @@ function testExcluirTarefaOutroUsuario() {
     const res = await request(app)
       .delete(`/tarefa/tasks/${outraTaskId}`)
       .set('Authorization', `Bearer ${token}`);
+      console.log(res.body.title);
+
     expect(res.status).toBe(400);
   });
 }
@@ -173,6 +191,8 @@ function testListarTarefasUsuarioLogado() {
     const res = await request(app)
       .get('/tarefa/tasks')
       .set('Authorization', `Bearer ${token}`);
+      console.log(res.body.title);
+
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
   });
