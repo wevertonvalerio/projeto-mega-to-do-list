@@ -16,6 +16,9 @@ describe('Testes de Usuário', () => {
       nome: 'usuario1',
       senha: 'senha123',
     });
+      console.log(res.body.title);
+
+
 
     expect(res.status).toBe(201);
     expect(res.body.usuario).toHaveProperty('id');
