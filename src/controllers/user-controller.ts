@@ -60,8 +60,6 @@ export class UserController {
       // Chama o modelo para realizar login e obter token JWT
       const { token } = await UserService.loginUsuario(nome, senha);
 
-      console.log(token)
-
       // Retorna status 200 com mensagem e token de autenticação
       res.status(200).json({
         message: "Login realizado com sucesso!",
