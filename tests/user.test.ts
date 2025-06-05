@@ -16,10 +16,9 @@ describe('Testes de Usuário', () => {
       nome: 'usuario1',
       senha: 'senha123',
     });
-      console.log(res.body.title);
 
-
-
+  console.log(res.body)
+  
     expect(res.status).toBe(201);
     expect(res.body.usuario).toHaveProperty('id');
   });
@@ -29,6 +28,9 @@ describe('Testes de Usuário', () => {
       nome: '',
       senha: 'senha123',
     });
+
+  console.log(res.body)
+
     expect(res.status).toBe(400);
   });
 
@@ -37,6 +39,9 @@ describe('Testes de Usuário', () => {
       nome: 'usuario2',
       senha: '',
     });
+
+  console.log(res.body)
+
     expect(res.status).toBe(400);
   });
 
@@ -53,6 +58,8 @@ describe('Testes de Usuário', () => {
     senha: 'senha123',
   });
 
+  console.log(res.body)
+
   expect(res.status).toBe(200);
   expect(res.body).toHaveProperty('token');
 });
@@ -62,6 +69,9 @@ describe('Testes de Usuário', () => {
       nome: 'usuario_incorreto',
       senha: 'senha123',
     });
+
+  console.log(res.body)
+
     expect(res.status).toBe(404);
   });
 
@@ -70,6 +80,9 @@ describe('Testes de Usuário', () => {
       nome: 'usuario1',
       senha: 'senha_errada',
     });
+
+  console.log(res.body)
+
     expect(res.status).toBe(404);
   });
 
@@ -78,6 +91,9 @@ describe('Testes de Usuário', () => {
       nome: '',
       senha: 'senha123',
     });
+
+  console.log(res.body)
+
     expect(res.status).toBe(400);
   });
 
@@ -86,6 +102,9 @@ describe('Testes de Usuário', () => {
       nome: 'usuario1',
       senha: '',
     });
+
+  console.log(res.body)
+
     expect(res.status).toBe(400);
   });
 
@@ -108,6 +127,9 @@ describe('Testes de Usuário', () => {
     const res = await request(app)
       .post('/usuario/logout')
       .set('Authorization', `Bearer ${userToken}`);
+
+  console.log(res.body)
+
     expect(res.status).toBe(202);
   });
 
@@ -136,11 +158,17 @@ describe('Testes de Usuário', () => {
     const res = await request(app)
       .get('/tarefa/tasks')
       .set('Authorization', `Bearer ${userToken}`);
+
+  console.log(res.body)
+
     expect(res.status).toBe(411);
   });
 
   it('Não deve excluir usuário sem estar logado', async () => {
     const res = await request(app).delete('/usuario/delete');
+
+  console.log(res.body)
+
     expect(res.status).toBe(402);
   });
 
@@ -170,6 +198,9 @@ describe('Testes de Usuário', () => {
       nome: 'usuario3',
       senha: 'senha123',
     });
+
+  console.log(res.body)
+
     expect(reloginRes.status).toBe(404);
   });
 });
