@@ -29,17 +29,6 @@ O backend deste projeto foi desenvolvido com as seguintes tecnologias:
 - **Express** – framework web para Node.js
 - **Nodemon** (opcional) – reinicia o servidor automaticamente ao salvar arquivos
 
-## ⚠️ Importante: Se estiver usando os computadores da faculdade
-
-Nos computadores da faculdade, **você provavelmente não terá permissão de administrador**, então:
-
-- **Não será possível instalar o Node.js, Git ou VS Code**
-- **Não será possível gerar nem configurar chave SSH**
-- **Terá dificuldade de programar localmente com Git**
-
-❗ **Recomendação**: nesses casos, use o **[GitHub Codespaces](#-usando-o-github-codespaces-recomendado)**, que permite programar direto do navegador sem precisar instalar nada.  
-Ele já vem com Git, Node.js, terminal e extensões prontos para uso.
-
 ## ⚙️ Pré-requisitos  
 Antes de começar, instale o seguinte no seu computador (caso **não use Codespaces**):
 
@@ -62,22 +51,6 @@ Antes de começar, instale o seguinte no seu computador (caso **não use Codespa
 
 - Instale os tipos do Express Validator para TypeScript pelo terminal utilizando esse comando:
 `npm install --save-dev @types/express-validator`
-
-## 💻 Usando o GitHub Codespaces (Recomendado)
-
-O GitHub Codespaces permite programar direto do navegador, sem precisar instalar nada.
-
-### Como abrir o projeto no Codespaces:
-
-1. Acesse o repositório no GitHub  
-2. Clique no botão verde `<> Code`  
-3. Vá na aba `Codespaces`  
-4. Clique em `Create codespace on main`  
-5. Aguarde enquanto ele configura tudo  
-6. Comece a programar direto do navegador  
-7. Ou clique em **"Open in VS Code"** para usar o VS Code instalado
-
-> **Obs:** o Codespaces já vem com Git, terminal e extensões configuradas.
 
 ## 📁 Organização das Pastas
 
@@ -124,67 +97,23 @@ projeto-mega-to-do-list/
 │             └── formatters.ts            # Funções de formatação de dados, como formatação de data e hora
 │             └── validators.ts            # Funções de validação de dados, como CPF, etc.
 │
-|     └── app.ts                           # Arquivo principal da aplicação, onde o servidor Express é configurado
+|     └── app.ts                           # Arquivo principal da aplicação, onde começa a rodar a aplicação
+|     └── server.ts                        # Onde o servidor Express é configurado
 |
 ├── /tests                                 # Testes da aplicação
 │     └── task.test.ts                     # Testes para a lógica de tarefas
 │     └── user.test.ts                     # Testes para a lógica de usuários
 │
-├── .dockerignore                          # Arquivo para ignorar arquivos no Docker
+├── .env                                   # Arquivo para configurar JWT_SECRET
 ├── .gitignore                             # Arquivo para ignorar arquivos no Git
-├── docker-compose.yml                     # Arquivo docker-compose para orquestrar containers
-├── Dockerfile                             # Arquivo de configuração do Docker
-├── package-lock.json # Trava de versões das dependências
-├── package.json # Gerenciador de dependências e scripts do projeto
-└── README.md # Instruções do projeto
+├── database.sqlite                        # Arquivo local de banco de dados SQLite.
+├── jest.config.ts                         # Arquivo de configuração do framework de testes Jest escrito em TypeScript.
+├── package-lock.json                      # Trava de versões das dependências
+├── package.json                           # Gerenciador de dependências e scripts do projeto
+├── README.md                              # Instruções do projeto
+├── tsconfig.json                          # Arquivo que define as configurações de compilação do TypeScript em um projeto.
+└── yarn.lock                              # Arquivo que registra as versões exatas das dependências instaladas com o Yarn para garantir builds reproduzíveis.
 ```
-
-## ✅ Boas Práticas
-
-Para manter o projeto organizado e facilitar o trabalho em equipe, siga estas boas práticas:
-
-### 🧹 Organização
-
-- Mantenha cada funcionalidade no seu diretório correspondente (`controllers`, `routes`, `services`, etc).
-- Nomeie arquivos e pastas em **kebab-case** (ex: `create-task.service.ts`).
-
-### ✍️ Commits
-
-- Escreva mensagens de commit claras e descritivas.
-- Use convenções como:
-  - `feat:` para novas funcionalidades
-  - `fix:` para correções de bugs
-  - `refactor:` para melhorias no código
-  - `docs:` para mudanças na documentação
-
-Exemplo:
-```bash
-git commit -m "feat: adiciona criação de tarefas"
-```
-
-### 🔁 Sincronização
-
-- Sempre dê `git pull` antes de começar a programar para garantir que está com a versão mais atual do código.
-- Faça `git push` com frequência para compartilhar suas alterações com o grupo e evitar conflitos.
-- Se estiver trabalhando com branches, sempre verifique se está na branch correta com `git branch`.
-
-### 🚫 Não faça isso
-
-- ❌ Não edite arquivos diretamente na branch `main` sem combinar com o grupo.
-- ❌ Não suba arquivos desnecessários, como:
-  - `node_modules/`
-  - Arquivos temporários do editor (ex: `.vscode/`, `.DS_Store`)
-  - Esses arquivos devem estar listados no `.gitignore`.
-
-### ✅ Faça isso
-
-- ✅ Crie branches para novas funcionalidades quando necessário (`git checkout -b nome-da-feature`).
-- ✅ Escreva commits claros e com mensagens curtas e descritivas.
-- ✅ Avise o grupo sobre qualquer mudança importante.
-- ✅ Teste suas alterações antes de enviar (`git push`).
-- ✅ Mantenha o padrão de código e organização definido pelo grupo.
-
-Seguindo essas práticas, o trabalho em equipe flui melhor e o projeto continua limpo e funcional para todos.
 
 ## Executar testes
 
